@@ -4,7 +4,7 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.1.13] - 2026-07-05
+## [0.1.0] - 2026-07-06
 
 ### Added
 
@@ -18,7 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- Compiled kernel runtime requires Python 3.13 for v0.1.13
+- Compiled kernel runtime requires Python 3.13 for v0.1.0
 - TestPyPI install requires PyPI as extra index for optional dependencies
 
 ### Security
@@ -34,4 +34,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CLA Assistant automation for external contributors
 - Additional marketplace templates
 
-[0.1.13]: https://github.com/pheo-ai/pheo/releases/tag/v0.1.13
+[0.1.0]: https://github.com/pheo-ai/pheo/releases/tag/v0.1.0
