@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pheo"
+version = "0.1.13"
+description = "Customer-controlled review memory for AI workflows"
+readme = "README.md"
+requires-python = ">=3.13"
+license = { file = "LICENSE" }
+authors = [{ name = "Pheo Inc." }]
+keywords = ["ai", "agents", "governance", "human-in-the-loop", "review", "memory", "rlhf"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = []
+
+[project.optional-dependencies]
+langchain = ["langchain-core>=0.3,<0.4"]
+dev = ["pytest>=8.0"]
+
+[project.urls]
+Homepage = "https://github.com/pheo-ai/pheo"
+Documentation = "https://github.com/pheo-ai/pheo/blob/main/README.md"
+Repository = "https://github.com/pheo-ai/pheo"
+Issues = "https://github.com/pheo-ai/pheo/issues"
+Changelog = "https://github.com/pheo-ai/pheo/blob/main/CHANGELOG.md"
+
+[project.scripts]
+pheo = "pheo.cli:entrypoint"
+
+[tool.setuptools.packages.find]
+include = ["pheo*", "pheo_kernels*"]
+
+[tool.setuptools.package-data]
+pheo = ["examples/**/*.md", "examples/**/*.jsonl"]
+pheo_kernels = ["*.pyc", "**/*.pyc", "_bundle/**"]
+
+[tool.setuptools.data-files]
+"." = ["LICENSE", "COMMERCIAL_LICENSE.md", "legal/KERNEL_LICENSE.md"]

@@ -1,0 +1,14 @@
+{
+  "calls": [
+    {
+      "id": "weave-1",
+      "op_name": "invoice_exception_review",
+      "inputs": {
+        "query": "Check whether an invoice exception can be cleared."
+      },
+      "summary": {
+        "output": "Hold payment until the invoice has a documented approver and matching policy support."
+      }
+    }
+  ]
+}

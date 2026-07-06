@@ -1,0 +1,14 @@
+include LICENSE
+include COMMERCIAL_LICENSE.md
+include README.md
+include CHANGELOG.md
+include openapi.json
+recursive-include legal *.md
+recursive-include pheo/examples *.md *.jsonl
+recursive-include pheo_kernels *.pyc
+recursive-include pheo_kernels/_bundle *.pyc
+prune pheo_kernels/__pycache__
+global-exclude __pycache__
+global-exclude *.pyo
+recursive-exclude pheo *.pyc
+recursive-exclude tests *.pyc

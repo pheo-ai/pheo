@@ -1,0 +1,40 @@
+name: Question
+description: Ask about usage, integration, or architecture
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+    validations:
+      required: true
+
+  - type: dropdown
+    id: topic
+    attributes:
+      label: Topic
+      options:
+        - Install / packaging
+        - SDK / CLI usage
+        - LangChain / trace import
+        - Review workflow / memory export
+        - Kernel boundary / licensing
+        - Enterprise / commercial
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Version, Python, workflow type, what you already tried.
+
+  - type: checkboxes
+    id: docs
+    attributes:
+      label: Docs checked
+      options:
+        - label: I read README.md and docs/getting-started.md
+        - label: I read docs/kernel-boundary.md (if kernel/licensing related)

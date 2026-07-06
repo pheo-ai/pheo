@@ -1,0 +1,49 @@
+{
+  "timestamp": "2026-06-25T12:00:00Z",
+  "traces": [
+    {
+      "trace_id": "noveum-trace-1",
+      "name": "auto_trace_ap_exception_review",
+      "attributes": {
+        "noveum.project": "finance-apprentice-demo",
+        "noveum.environment": "local-test"
+      },
+      "spans": [
+        {
+          "span_id": "span-operation-1",
+          "trace_id": "noveum-trace-1",
+          "name": "ap_exception_review",
+          "attributes": {
+            "workflow": "ap_invoice_exception",
+            "invoice_id": "AP-1007",
+            "review.goal": "Prepare an AP exception note for human approval before any payment-related action."
+          }
+        },
+        {
+          "span_id": "span-llm-1",
+          "trace_id": "noveum-trace-1",
+          "parent_span_id": "span-operation-1",
+          "name": "llm.summarize_invoice",
+          "attributes": {
+            "llm.model": "openai/gpt-4o-mini",
+            "llm.provider": "openrouter",
+            "llm.input.prompt": "Summarize invoice AP-1007 with missing approval support.",
+            "llm.output.response": "Invoice AP-1007 should be escalated because approval support is missing and the approver is not identified.",
+            "llm.total_tokens": 53
+          }
+        },
+        {
+          "span_id": "span-agent-1",
+          "trace_id": "noveum-trace-1",
+          "parent_span_id": "span-operation-1",
+          "name": "agent.draft_review_note",
+          "attributes": {
+            "agent.type": "workflow_agent",
+            "agent.operation": "draft_review_note",
+            "agent.result": "pending_human_review"
+          }
+        }
+      ]
+    }
+  ]
+}

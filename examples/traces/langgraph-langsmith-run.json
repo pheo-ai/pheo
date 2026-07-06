@@ -1,0 +1,17 @@
+{
+  "runs": [
+    {
+      "id": "langgraph-1",
+      "name": "support_triage_graph",
+      "inputs": {
+        "prompt": "Draft a support reply for a refund request with policy uncertainty."
+      },
+      "outputs": {
+        "output": "Acknowledge the refund request, cite the refund policy, and ask a human reviewer to approve the final response before sending."
+      },
+      "serialized": {
+        "name": "langgraph.support_triage"
+      }
+    }
+  ]
+}

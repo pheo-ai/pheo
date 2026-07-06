@@ -1,0 +1,56 @@
+# Pheo
+
+Pheo adds governed human judgment to AI workflows that already exist.
+
+Use it when an app, agent, model endpoint, trace, batch job, or business workflow produces output that needs human judgment before reuse.
+
+Do not rebuild the workflow inside Pheo. Add Pheo at the review point, capture approve/edit/reject/escalate decisions with reasons, export the memory pack, then apply compiled judgment memory on the next similar cycle.
+
+## Start Here
+
+- Agent guide: `docs/agents.md`
+- Human walkthrough: `docs/getting-started.md`
+- Finance example: `examples/finance_exception/README.md`
+- LangChain attach demo: `examples/langchain_attach/README.md`
+- Copy-paste patterns: `patterns/`
+
+## Core Loop
+
+```text
+add source material
+approve review rules
+observe workflow output
+capture human judgment with reason
+freeze release receipt
+export preference data
+apply judgment memory on next cycle
+```
+
+## Best First Command For Agents
+
+```text
+Read docs/agents.md. Add Pheo review and export to the existing workflow. Do not rebuild the app inside Pheo. Use memory= on the next cycle and export receipts, preference data, and cycle diff.
+```
+
+## Proof Script
+
+```bash
+python examples/finance_exception/run_preference_factory.py \
+  --project /tmp/pheo-preference-factory \
+  --out /tmp/pheo-preference-factory-pack
+```
+
+This is the shortest end-to-end check for observe -> review -> export -> apply memory.
+
+## Integration Choices
+
+- Existing Python function: `patterns/wrap-python-function.md`
+- LangChain output: use `pheo.integrations.langchain.with_pheo_review(...)`; see `patterns/langchain-attach.md`
+- LangGraph final node: use `pheo.integrations.langchain.pheo_review_node(...)` before business side effects
+- OpenAI/OpenRouter-compatible endpoint: `patterns/openai-compatible-endpoint.md`
+- LangSmith, W&B Weave, or Noveum traces: `patterns/import-traces.md`
+- Coding-agent setup through MCP: `patterns/mcp-agent-checklist.md`
+
+Pheo does not receive customer data by default and does not call a Pheo-owned model.
+
+Pheo source is MIT-licensed. It owns review gates, receipts, preference data, memory packs, local custody, and the bundled compiled kernel runtime. The repository does not include a public reference implementation of scoring, branching, or methodology synthesis.
