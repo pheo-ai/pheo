@@ -491,6 +491,7 @@ PREFERENCE_STORE_HTML = """<!doctype html>
     .results-table th { color: var(--muted); font-size: 12px; font-weight: 650; background: rgba(244,248,247,.72); }
     .results-table tr:last-child td { border-bottom: 0; }
     .result-pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 5px 9px; font-size: 12px; font-weight: 650; background: var(--green-soft); color: var(--green); }
+    .result-pill.reviewed { background: #e7f5ec; color: #17633a; }
     .result-pill.review { background: var(--amber-soft); color: #7a561f; }
     .result-pill.not_selected { background: var(--blue-soft); color: var(--blue); }
     .row-title { font-weight: 600; max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -703,7 +704,7 @@ PREFERENCE_STORE_HTML = """<!doctype html>
             <textarea id="review-correction" placeholder="Optional corrected output. Leave blank for approval."></textarea>
             <div class="actions" style="margin-top:12px">
               <button class="primary" onclick="capturePacketReview()">Capture review</button>
-              <button onclick="window.location.href='/'">Back to PHEO</button>
+              <button onclick="backToPheoFromReview()">Back to PHEO</button>
             </div>
             <p id="review-captured-note" class="muted small hidden" style="margin-top:10px">
               Review saved. If this page was opened by a one-shot demo, return to the terminal;
@@ -904,6 +905,8 @@ let projectState = null;
 let workflowEndpointDraft = {};
 let selectedGrowSourceIds = new Set();
 let growSourceSelectionTouched = false;
+const SESSION_WORKFLOW_KEY = 'pheo.activeWorkflowId';
+const REVIEW_CHANNEL = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('pheo-review') : null;
 
 const DEMO_FINANCE_RECEIPT_POLICY = `Finance receipt review policy.
 
@@ -1071,14 +1074,53 @@ const FINANCE_RECEIPT_CASES = [
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (REVIEW_CHANNEL) {
+    REVIEW_CHANNEL.onmessage = (event) => {
+      const payload = event.data || {};
+      if (payload.type === 'review-captured' && workflow && payload.workflowId === workflow.id) {
+        hydrateWorkflow().catch(showError);
+      }
+    };
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && workflow && activeStep === 'grow') {
+      hydrateWorkflow().catch(showError);
+    }
+  });
   const reviewMatch = window.location.pathname.match(/^\\/review\\/([^/]+)$/);
   if (reviewMatch) {
     loadReviewPacket(reviewMatch[1]).catch(showError);
   } else {
-    autoOpenStore = new URLSearchParams(window.location.search).get('store') || '';
+    autoOpenStore = new URLSearchParams(window.location.search).get('store') || rememberedWorkflowId();
     loadProjects().then(loadWorkflows).catch(showError);
   }
 });
+
+function rememberedWorkflowId() {
+  try {
+    return sessionStorage.getItem(SESSION_WORKFLOW_KEY) || '';
+  } catch (_) {
+    return '';
+  }
+}
+
+function rememberWorkflow(id) {
+  if (!id) return;
+  try {
+    sessionStorage.setItem(SESSION_WORKFLOW_KEY, id);
+  } catch (_) {}
+}
+
+function clearRememberedWorkflow() {
+  try {
+    sessionStorage.removeItem(SESSION_WORKFLOW_KEY);
+  } catch (_) {}
+}
+
+async function findWorkflowBySkill(skill) {
+  const data = await api('/v1/workflows');
+  return (data.workflows || []).find(item => item.skill === skill || item.name === skill) || null;
+}
 
 async function api(path, options = {}) {
   const response = await fetch(path, {
@@ -1202,11 +1244,17 @@ async function createWorkflow() {
   await hydrateWorkflow();
   showApp();
   applyWorkflowDraft();
-  go('go');
-  toast('Workflow created. Start with PHEO Go.');
+  go(nextStep());
+  toast('Workflow created. Continue where you left off.');
 }
 
 async function startMedicalTemplate() {
+  const existing = await findWorkflowBySkill('medical_review');
+  if (existing) {
+    await selectWorkflow(existing.id);
+    toast('Medical review workflow opened where you left off.');
+    return;
+  }
   const created = await api('/v1/workflows', {method: 'POST', body: JSON.stringify({
     name: 'medical_review',
     domain: 'life_sciences',
@@ -1227,11 +1275,17 @@ async function startMedicalTemplate() {
   showApp();
   applyWorkflowDraft();
   await attachStarterSources('medical');
-  go('go');
-  toast('Medical review starter corpus attached. Click Onboard apprentice.');
+  go(nextStep());
+  toast('Medical review starter corpus attached.');
 }
 
 async function startFinanceDemo() {
+  const existing = await findWorkflowBySkill('finance_receipt_review');
+  if (existing) {
+    await selectWorkflow(existing.id);
+    toast('Finance workflow opened where you left off.');
+    return;
+  }
   const created = await api('/v1/workflows', {method: 'POST', body: JSON.stringify({
     name: 'finance_receipt_review',
     domain: 'finance',
@@ -1253,12 +1307,13 @@ async function startFinanceDemo() {
   showApp();
   applyWorkflowDraft();
   await attachStarterSources('finance');
-  go('go');
-  toast('Finance receipt starter set attached. Click Onboard apprentice.');
+  go(nextStep());
+  toast('Finance receipt starter set attached.');
 }
 
 async function selectWorkflow(id) {
   workflow = (await api(`/v1/workflows/${id}`)).workflow;
+  rememberWorkflow(workflow.id);
   workflowEndpointDraft = {};
   resetGrowSourceSelection();
   await hydrateWorkflow();
@@ -1293,6 +1348,7 @@ function applyWorkflowDraft() {
 function backHome() {
   workflow = null;
   store = null;
+  clearRememberedWorkflow();
   resetGrowSourceSelection();
   document.getElementById('app').classList.add('hidden');
   document.getElementById('review-page').classList.add('hidden');
@@ -1303,6 +1359,11 @@ function backHome() {
 function resetGrowSourceSelection() {
   selectedGrowSourceIds = new Set();
   growSourceSelectionTouched = false;
+}
+
+function backToPheoFromReview() {
+  const id = workflow && workflow.id;
+  window.location.href = id ? `/?store=${encodeURIComponent(id)}` : '/';
 }
 
 async function loadReviewPacket(packetId) {
@@ -1377,6 +1438,16 @@ async function capturePacketReview() {
   const note = document.getElementById('review-captured-note');
   if (note) note.classList.remove('hidden');
   await loadReviewPacket(result.packet.id);
+  const workflowId = workflow && workflow.id;
+  if (workflowId) {
+    notifyReviewCaptured(workflowId, result.packet.id);
+    await hydrateWorkflow();
+  }
+}
+
+function notifyReviewCaptured(workflowId, packetId) {
+  if (!REVIEW_CHANNEL) return;
+  REVIEW_CHANNEL.postMessage({type: 'review-captured', workflowId, packetId});
 }
 
 function renderShell() {
@@ -1620,7 +1691,7 @@ async function useDemoFinancePolicy(confirmReplace = true) {
   document.getElementById('corpus-title').value = 'Demo finance receipt review policy';
   document.getElementById('corpus-text').value = DEMO_FINANCE_RECEIPT_POLICY;
   await hydrateWorkflow();
-  go('go');
+  go(nextStep());
   toast('Demo finance receipt policy loaded. Review or edit it, then create rules.');
 }
 
@@ -1879,6 +1950,7 @@ function renderRuns() {
           <p class="muted small">${packets.length} observed item${packets.length === 1 ? '' : 's'}.</p>
         </div>
         <div class="actions compact">
+          ${resultCountPill('Reviewed', enriched.filter(item => item.bucket === 'reviewed').length, '')}
           ${resultCountPill('Selected', enriched.filter(item => item.bucket === 'selected').length, '')}
           ${resultCountPill('Needs judgment', enriched.filter(item => item.bucket === 'review').length, 'amber')}
           ${resultCountPill('Not selected', enriched.filter(item => item.bucket === 'not_selected').length, 'blue')}
@@ -1938,7 +2010,7 @@ function renderResultRow(item) {
 }
 
 function resultPill(bucket) {
-  const klass = bucket === 'review' ? 'review' : bucket === 'not_selected' ? 'not_selected' : '';
+  const klass = bucket === 'reviewed' ? 'reviewed' : bucket === 'review' ? 'review' : bucket === 'not_selected' ? 'not_selected' : '';
   return `<span class="result-pill ${klass}">${escapeHtml(resultLabel(bucket))}</span>`;
 }
 
@@ -1946,7 +2018,8 @@ function resultLabel(bucket) {
   const labels = {
     selected: 'Selected',
     review: 'Needs judgment',
-    not_selected: 'Not selected'
+    not_selected: 'Not selected',
+    reviewed: 'Reviewed'
   };
   return labels[bucket] || 'Needs judgment';
 }
@@ -1963,9 +2036,22 @@ function reviewItemSubline(item) {
 }
 
 function judgmentState(item) {
-  if ((item.packet || {}).status === 'reviewed') return 'Saved';
+  if ((item.packet || {}).status === 'reviewed') {
+    const decision = decisionForPacket(item.packet, item.run);
+    if (!decision) return 'Saved';
+    const action = decision.action || 'approve';
+    const author = decision.author_id || 'reviewer';
+    const when = decision.created_at ? new Date(decision.created_at).toLocaleString() : '';
+    return `${action} · ${author}${when ? ` · ${when}` : ''}`;
+  }
   if (item.bucket === 'review') return 'Requested';
   return 'Optional';
+}
+
+function decisionForPacket(packet, run) {
+  const runId = (run && run.id) || (packet && packet.run_id);
+  if (!runId || !store) return null;
+  return (store.decisions || []).find(item => item.run_id === runId) || null;
 }
 
 function renderBucket(title, subtitle, items) {
@@ -1995,6 +2081,7 @@ function renderBucketItem(item) {
 }
 
 function bucketForReviewPacket(packet, recommended) {
+  if (packet && packet.status === 'reviewed') return 'reviewed';
   const run = arguments.length > 2 ? arguments[2] : {};
   const target = run && run.task && run.task.context && run.task.context.target_bucket;
   if (['selected', 'review', 'not_selected'].includes(target)) return target;
@@ -2394,6 +2481,10 @@ async function downloadJsonl(kind) {
 }
 
 function go(step) {
+  goStep(step).catch(showError);
+}
+
+async function goStep(step) {
   if (step === 'grow' && (!activeCorpus().length || !approvedMethodology())) {
     toast('Finish PHEO Go first: onboard source material and rules.', true);
     step = 'go';
@@ -2404,6 +2495,12 @@ function go(step) {
   document.querySelectorAll('button.step').forEach(button => button.classList.remove('active'));
   const stepButton = document.getElementById('step-' + step);
   if (stepButton) stepButton.classList.add('active');
+  if (step === 'go') {
+    renderOnboardStatus();
+  }
+  if (step === 'grow' && workflow) {
+    await hydrateWorkflow();
+  }
 }
 
 function nextStep() {

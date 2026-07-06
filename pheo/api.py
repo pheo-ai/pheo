@@ -245,11 +245,16 @@ def create_handler(project="./.pheo"):
                         body.get("goal") or body.get("objective") or body.get("description") or "",
                         body.get("skill") or "",
                         body.get("quality_dimensions") or [],
+                        force_new=bool(body.get("force_new")),
                     )
                     return self.json({"workflow": workflow}, HTTPStatus.CREATED)
                 if path.startswith("/v1/workflows/") and path.endswith("/corpus"):
                     workflow_id = _path_part(path, 2)
-                    items = state["factory"].attach_corpus(workflow_id, body.get("items") or [])
+                    items = state["factory"].attach_corpus(
+                        workflow_id,
+                        body.get("items") or [],
+                        rebuild_methodology=body.get("rebuild_methodology"),
+                    )
                     return self.json({"items": items}, HTTPStatus.CREATED)
                 if path.startswith("/v1/workflows/") and path.endswith("/methodology/build"):
                     workflow_id = _path_part(path, 2)

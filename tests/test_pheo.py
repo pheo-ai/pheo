@@ -620,6 +620,47 @@ class PheoTest(unittest.TestCase):
             self.assertEqual(organic_pack["memory_summary"]["bootstrap_pairs"], 0)
             self.assertTrue(all(key.startswith("human") for key in organic_pack["memory_summary"]["pair_counts_by_provenance"]))
 
+    def test_attach_corpus_skips_methodology_rebuild_when_approved(self):
+        with tempfile.TemporaryDirectory() as tempdir:
+            factory = pheo.Pheo.open(tempdir)
+            workflow = factory.workflow("finance_receipt_review", domain="finance")
+            factory.attach_corpus(workflow["id"], [pheo.Text("Policy", "Human review required.")])
+            factory.build_methodology(workflow["id"])
+            factory.review_methodology(workflow["id"])
+            approved = factory.approve_methodology(workflow["id"])
+            approved_id = approved["id"]
+            factory.attach_corpus(workflow["id"], [pheo.Text("Extra", "More corpus without rebuilding rules.")])
+            current = factory.methodology(workflow["id"])
+            self.assertEqual(current["id"], approved_id)
+            self.assertEqual(current["status"], "approved")
+
+    def test_attach_corpus_can_force_methodology_rebuild(self):
+        with tempfile.TemporaryDirectory() as tempdir:
+            factory = pheo.Pheo.open(tempdir)
+            workflow = factory.workflow("finance_receipt_review", domain="finance")
+            factory.attach_corpus(workflow["id"], [pheo.Text("Policy", "Human review required.")])
+            factory.build_methodology(workflow["id"])
+            factory.review_methodology(workflow["id"])
+            approved = factory.approve_methodology(workflow["id"])
+            factory.attach_corpus(
+                workflow["id"],
+                [pheo.Text("Extra", "More corpus with rebuild.")],
+                rebuild_methodology=True,
+            )
+            current = factory.methodology(workflow["id"])
+            self.assertNotEqual(current["id"], approved["id"])
+            self.assertEqual(current["status"], "draft")
+
+    def test_force_new_workflow_creates_distinct_records(self):
+        with tempfile.TemporaryDirectory() as tempdir:
+            factory = pheo.Pheo.open(tempdir)
+            first = factory.workflow("finance_receipt_review", domain="finance", force_new=False)
+            second = factory.workflow("finance_receipt_review", domain="finance", force_new=False)
+            self.assertEqual(first["id"], second["id"])
+            third = factory.workflow("finance_receipt_review", domain="finance", force_new=True)
+            self.assertNotEqual(third["id"], first["id"])
+            self.assertNotEqual(third["name"], first["name"])
+
     def test_deactivating_corpus_preserves_decision_memory(self):
         with tempfile.TemporaryDirectory() as tempdir:
             factory = pheo.Pheo.open(tempdir)

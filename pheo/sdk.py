@@ -58,8 +58,23 @@ class Pheo:
         self._current_workflow_id = workflow["id"]
         return workflow
 
-    def workflow(self, name: str, domain: str = "", objective: str = "", skill: str = "", quality_dimensions=None):
-        workflow = self.store.create_workflow(name, domain, objective, skill, quality_dimensions or [])
+    def workflow(
+        self,
+        name: str,
+        domain: str = "",
+        objective: str = "",
+        skill: str = "",
+        quality_dimensions=None,
+        force_new: bool = False,
+    ):
+        workflow = self.store.create_workflow(
+            name,
+            domain,
+            objective,
+            skill,
+            quality_dimensions or [],
+            force_new=force_new,
+        )
         self._current_workflow_id = workflow["id"]
         return workflow
 
@@ -80,14 +95,19 @@ class Pheo:
         self._current_workflow_id = workflow["id"]
         return workflow
 
-    def attach_corpus(self, workflow_id: str, items: list[Any]):
+    def attach_corpus(self, workflow_id: str, items: list[Any], rebuild_methodology: bool | None = None):
         workflow = self.get_workflow(workflow_id)
         records = []
         for record in normalize_sources(items):
             record["content_hash"] = content_hash(record.get("text", ""))
             records.append(self.store.create_corpus_item(workflow["id"], record))
         if records:
-            self.build_methodology(workflow["id"])
+            should_rebuild = rebuild_methodology
+            if should_rebuild is None:
+                methodology = self.methodology(workflow["id"]) or {}
+                should_rebuild = methodology.get("status") != "approved"
+            if should_rebuild:
+                self.build_methodology(workflow["id"])
         return records
 
     def corpus(self, workflow_id: str, active_only: bool = False):

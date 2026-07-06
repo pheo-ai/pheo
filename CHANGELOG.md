@@ -4,6 +4,20 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.3] - 2026-07-06
+
+### Fixed
+
+- Marketplace and workflow re-entry resume onboarding state instead of forcing PHEO Go
+- Corpus attach no longer supersedes approved methodology unless explicitly rebuilt
+- Review queue refreshes after capture and shows reviewed status with decision metadata
+- Grow tab re-fetches preference-store when reopened or when review completes in another tab
+
+### Changed
+
+- `force_new` on workflow create now creates a distinct workflow record
+- Session remembers the active workflow across page reload via `sessionStorage`
+
 ## [0.1.2] - 2026-07-06
 
 ### Fixed
@@ -53,6 +67,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CLA Assistant automation for external contributors
 - Additional marketplace templates
 
+[0.1.3]: https://github.com/pheo-ai/pheo/releases/tag/v0.1.3
 [0.1.2]: https://github.com/pheo-ai/pheo/releases/tag/v0.1.2
 [0.1.1]: https://github.com/pheo-ai/pheo/releases/tag/v0.1.1
 [0.1.0]: https://github.com/pheo-ai/pheo/releases/tag/v0.1.0

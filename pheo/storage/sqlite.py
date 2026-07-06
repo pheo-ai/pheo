@@ -49,10 +49,21 @@ class SQLiteStore:
                 conn.execute(statement)
             _migrate_methodology_columns(conn)
 
-    def create_workflow(self, name: str, domain: str = "", objective: str = "", skill: str = "", quality_dimensions=None):
-        existing = self.get_workflow(name)
-        if existing:
-            return existing
+    def create_workflow(
+        self,
+        name: str,
+        domain: str = "",
+        objective: str = "",
+        skill: str = "",
+        quality_dimensions=None,
+        force_new: bool = False,
+    ):
+        if not force_new:
+            existing = self.get_workflow(name)
+            if existing:
+                return existing
+        else:
+            name = self._unique_workflow_name(name)
         workflow_id = new_id("wf")
         timestamp = now_iso()
         with self.connect() as conn:
@@ -69,6 +80,14 @@ class SQLiteStore:
         with self.connect() as conn:
             row = conn.execute("SELECT * FROM workflows WHERE id = ? OR name = ?", [workflow_ref, workflow_ref]).fetchone()
         return _decode_workflow(row) if row else None
+
+    def _unique_workflow_name(self, name: str) -> str:
+        if not self.get_workflow(name):
+            return name
+        index = 2
+        while self.get_workflow(f"{name}-{index}"):
+            index += 1
+        return f"{name}-{index}"
 
     def list_workflows(self):
         with self.connect() as conn:
