@@ -29,7 +29,7 @@ python3.13 -m pip install --upgrade pip
 python3.13 -m pip install \
   --index-url https://test.pypi.org/simple/ \
   --extra-index-url https://pypi.org/simple/ \
-  "pheo[langchain]==0.1.0"
+  "pheo[langchain]==0.1.1"
 pheo init
 ```
 
@@ -44,7 +44,7 @@ python3.13 -m pip install --upgrade pip
 python3.13 -m pip install \
   --index-url https://test.pypi.org/simple/ \
   --extra-index-url https://pypi.org/simple/ \
-  "pheo[langchain]==0.1.0"
+  "pheo[langchain]==0.1.1"
 pheo init
 pheo
 ```
