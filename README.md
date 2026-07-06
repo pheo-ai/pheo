@@ -35,6 +35,30 @@ pheo init
 
 TestPyPI hosts the `pheo` wheel. Dependencies such as `langchain-core` resolve from PyPI — both indexes are required.
 
+## Try in 60 seconds
+
+```bash
+python3.13 -m venv .venv
+source .venv/bin/activate
+python3.13 -m pip install --upgrade pip
+python3.13 -m pip install \
+  --index-url https://test.pypi.org/simple/ \
+  --extra-index-url https://pypi.org/simple/ \
+  "pheo[langchain]==0.1.0"
+pheo init
+pheo
+```
+
+`pheo` opens the local UI at `http://127.0.0.1:8787`. The terminal keeps running until you press `Ctrl+C`.
+
+Or run the bundled demo (no repo clone needed):
+
+```bash
+pheo demo hello-world --reset
+```
+
+For the full AP finance walkthrough, clone this repo and follow [Getting Started](docs/getting-started.md).
+
 For contributors installing from source: `python3.13 -m pip install -e ".[langchain,dev]"`. See [docs/deployment.md](docs/deployment.md) and [docs/release.md](docs/release.md).
 
 Using a coding agent? Start with [docs/agents.md](docs/agents.md).
