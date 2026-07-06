@@ -2,7 +2,7 @@ from pheo.core.corpus import File, Folder, Text
 from pheo.sdk import GovernedOutcome, PendingReview, Pheo
 
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 
 def open(project="./.pheo"):
