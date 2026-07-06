@@ -332,8 +332,8 @@ def main(argv=None):
     export_checks.add_argument("--workflow", required=True)
     export_checks.add_argument("--organic-only", action="store_true")
 
-    if not argv:
-        argv = ["start"]
+    if not _has_subcommand(argv):
+        argv = [*argv, "start"]
     args = parser.parse_args(argv)
     if args.cli:
         print(_cli_mode_text())
@@ -729,6 +729,47 @@ def _normalize_argv(argv):
         packet_id = argv[review_index + 1]
         return argv[: review_index + 1] + ["capture", "--packet", packet_id] + argv[review_index + 2 :]
     return argv
+
+
+_SUBCOMMANDS = {
+    "project",
+    "init",
+    "mcp",
+    "demo",
+    "start",
+    "studio",
+    "store",
+    "source",
+    "connection",
+    "review-point",
+    "observe",
+    "review",
+    "workflow",
+    "corpus",
+    "methodology",
+    "run",
+    "memory",
+    "receipts",
+    "cycle-diff",
+    "decision",
+    "export",
+}
+
+
+def _has_subcommand(argv):
+    index = 0
+    while index < len(argv):
+        token = argv[index]
+        if token in _SUBCOMMANDS:
+            return True
+        if token == "--project" and index + 1 < len(argv):
+            index += 2
+            continue
+        if token.startswith("--project="):
+            index += 1
+            continue
+        index += 1
+    return False
 
 
 def _cli_mode_text() -> str:
