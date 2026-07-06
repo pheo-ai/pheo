@@ -705,6 +705,22 @@ def main(argv=None):
 
 def _normalize_argv(argv):
     argv = list(argv)
+    project_flags: list[str] = []
+    cleaned: list[str] = []
+    index = 0
+    while index < len(argv):
+        token = argv[index]
+        if token == "--project" and index + 1 < len(argv):
+            project_flags.extend(["--project", argv[index + 1]])
+            index += 2
+            continue
+        if token.startswith("--project="):
+            project_flags.append(token)
+            index += 1
+            continue
+        cleaned.append(token)
+        index += 1
+    argv = project_flags + cleaned
     try:
         review_index = argv.index("review")
     except ValueError:

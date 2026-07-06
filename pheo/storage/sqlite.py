@@ -359,6 +359,11 @@ class SQLiteStore:
             conn.execute("UPDATE corpus_items SET active = 0 WHERE id = ?", [item_id])
         return self.get_corpus_item(item_id)
 
+    def deactivate_workflow_corpus(self, workflow_id: str):
+        with self.connect() as conn:
+            conn.execute("UPDATE corpus_items SET active = 0 WHERE workflow_id = ?", [workflow_id])
+        return self.list_corpus(workflow_id)
+
     def save_methodology(
         self,
         workflow_id: str,
