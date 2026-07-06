@@ -3,6 +3,16 @@ name: Publish to PyPI/TestPyPI
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Publish target
+        required: true
+        default: testpypi
+        type: choice
+        options:
+          - testpypi
+          - pypi
 
 env:
   PYTHON_VERSION: "3.13"
@@ -10,11 +20,16 @@ env:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    # Trusted publishing requires a matching GitHub Environment on TestPyPI/PyPI.
+    environment: ${{ github.event_name == 'workflow_dispatch' && inputs.target || (github.event.release.prerelease && 'testpypi' || 'pypi') }}
     permissions:
-      id-token: write  # trusted publishing
+      contents: read
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || github.ref }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -28,11 +43,11 @@ jobs:
         run: python -m build
 
       - name: Publish to PyPI
-        if: github.event.release.prerelease == false
+        if: (github.event_name == 'workflow_dispatch' && inputs.target == 'pypi') || (github.event_name == 'release' && github.event.release.prerelease == false)
         uses: pypa/gh-action-pypi-publish@release/v1
 
       - name: Publish to TestPyPI
-        if: github.event.release.prerelease == true
+        if: (github.event_name == 'workflow_dispatch' && inputs.target == 'testpypi') || (github.event_name == 'release' && github.event.release.prerelease == true)
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
