@@ -11,7 +11,7 @@ python3.13 -m pip install --upgrade pip
 python3.13 -m pip install \
   --index-url https://test.pypi.org/simple/ \
   --extra-index-url https://pypi.org/simple/ \
-  "pheo[langchain]==0.1.13"
+  "pheo[langchain]==0.1.0"
 pheo init
 ```
 
@@ -36,7 +36,7 @@ Application code imports only `pheo`.
 
 ## Python Versions
 
-Supported for **v0.1.13**: **3.13 only**.
+Supported for **v0.1.0**: **3.13 only**.
 
 The bundled compiled kernel (`pheo_kernels/_runtime.pyc`) ships as a CPython 3.13 bytecode artifact. Older Python versions fail at import with a kernel compatibility error. Broader Python support requires additional kernel builds in a future release.
 
