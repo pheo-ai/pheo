@@ -4,6 +4,17 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.4] - 2026-07-07
+
+### Fixed
+
+- Publish workflow skips TestPyPI uploads when a version already exists (release retriggers no longer fail)
+
+### Changed
+
+- Public contact email unified to `apprentice@pheo.ai`
+- GitHub Actions: `actions/checkout@v7`, `actions/setup-python@v6`
+
 ## [0.1.3] - 2026-07-06
 
 ### Fixed
@@ -67,6 +78,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CLA Assistant automation for external contributors
 - Additional marketplace templates
 
+[0.1.4]: https://github.com/pheo-ai/pheo/releases/tag/v0.1.4
 [0.1.3]: https://github.com/pheo-ai/pheo/releases/tag/v0.1.3
 [0.1.2]: https://github.com/pheo-ai/pheo/releases/tag/v0.1.2
 [0.1.1]: https://github.com/pheo-ai/pheo/releases/tag/v0.1.1
