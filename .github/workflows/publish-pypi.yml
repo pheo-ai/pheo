@@ -27,12 +27,12 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.release.tag_name || github.ref }}
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
@@ -45,9 +45,12 @@ jobs:
       - name: Publish to PyPI
         if: (github.event_name == 'workflow_dispatch' && inputs.target == 'pypi') || (github.event_name == 'release' && github.event.release.prerelease == false)
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
 
       - name: Publish to TestPyPI
         if: (github.event_name == 'workflow_dispatch' && inputs.target == 'testpypi') || (github.event_name == 'release' && github.event.release.prerelease == true)
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
