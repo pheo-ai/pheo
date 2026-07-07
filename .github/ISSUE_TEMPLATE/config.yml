@@ -4,5 +4,5 @@ contact_links:
     url: https://github.com/pheo-ai/pheo/blob/main/SECURITY.md
     about: Do not file public issues for vulnerabilities.
   - name: Commercial / enterprise
-    url: mailto:legal@pheo.ai
+    url: mailto:apprentice@pheo.ai
     about: Custom kernels, enterprise terms, and support.

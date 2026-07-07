@@ -55,7 +55,7 @@ See [docs/kernel-boundary.md](docs/kernel-boundary.md#pull-requests-we-want).
 
 ## Code of Conduct
 
-This project follows the [Contributor Covenant](CODE_OF_CONDUCT.md). Report issues to **conduct@pheo.ai**.
+This project follows the [Contributor Covenant](CODE_OF_CONDUCT.md). Report issues to **apprentice@pheo.ai**.
 
 ## License
 

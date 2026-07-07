@@ -13,7 +13,7 @@ You may use the name "Pheo" in these contexts without a separate trademark licen
 
 ## Requires Permission
 
-Contact **legal@pheo.ai** before:
+Contact **apprentice@pheo.ai** before:
 
 - Using Pheo branding in a product name, company name, or domain
 - Implying endorsement, partnership, or official status with Pheo Inc.
@@ -28,4 +28,4 @@ The bundled kernel runtime is subject to separate terms in [legal/KERNEL_LICENSE
 
 ## Questions
 
-Email **legal@pheo.ai** for trademark guidance.
+Email **apprentice@pheo.ai** for trademark guidance.

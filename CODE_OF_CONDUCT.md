@@ -34,7 +34,7 @@ This Code of Conduct applies within all community spaces and when an individual 
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the maintainers at **conduct@pheo.ai**. All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the maintainers at **apprentice@pheo.ai**. All complaints will be reviewed and investigated promptly and fairly.
 
 ## Attribution
 

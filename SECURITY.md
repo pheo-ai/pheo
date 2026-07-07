@@ -14,7 +14,7 @@ Security fixes are published for the latest release on TestPyPI/PyPI and in this
 
 Report security issues privately to:
 
-- **Email:** security@pheo.ai
+- **Email:** apprentice@pheo.ai
 - **Subject:** `[SECURITY] Pheo`
 
 Include:

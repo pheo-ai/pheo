@@ -47,7 +47,7 @@ You may redistribute unmodified official `pheo` packages if you include `LICENSE
 
 Commercial support, enterprise deployment, custom domain kernels, SLA-backed releases, and managed rollout are handled by Pheo Inc.
 
-Contact: **legal@pheo.ai**
+Contact: **apprentice@pheo.ai**
 
 ## Trademark
 

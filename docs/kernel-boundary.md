@@ -93,4 +93,4 @@ Commercial support, enterprise terms, and custom domain kernels are handled by P
 
 ## Questions
 
-Open a [Question issue](https://github.com/pheo-ai/pheo/issues/new?template=question.yml) or email **legal@pheo.ai** for boundary clarifications before large PRs.
+Open a [Question issue](https://github.com/pheo-ai/pheo/issues/new?template=question.yml) or email **apprentice@pheo.ai** for boundary clarifications before large PRs.

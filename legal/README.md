@@ -14,7 +14,7 @@ Before opening a code PR:
 1. Read [pheo-contributor-agreement.md](pheo-contributor-agreement.md)
 2. Comment on your PR: `I have read and agree to the Pheo Contributor Agreement v1.0`
 
-Enterprise contributors may request a PDF signature workflow via **legal@pheo.ai**.
+Enterprise contributors may request a PDF signature workflow via **apprentice@pheo.ai**.
 
 ## Regenerate PDF (maintainers)
 
@@ -32,4 +32,4 @@ Compiled artifacts in `pheo_kernels/` are **not** MIT-licensed. See [KERNEL_LICE
 
 ## Questions
 
-Email **legal@pheo.ai**.
+Email **apprentice@pheo.ai**.

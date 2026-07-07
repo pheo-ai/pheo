@@ -44,7 +44,7 @@ Do not represent modified packages as official Pheo releases.
 
 Commercial support, enterprise deployment, custom domain kernels, SLA-backed releases, and managed rollout are available under separate agreement with Pheo Inc.
 
-Contact: **legal@pheo.ai**
+Contact: **apprentice@pheo.ai**
 
 ## 6. Disclaimer
 

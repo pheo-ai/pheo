@@ -46,12 +46,12 @@ Your Contribution is provided **"AS IS"**, without warranties or conditions of a
 Acceptance methods:
 
 1. **GitHub PR comment:** `I have read and agree to the Pheo Contributor Agreement v1.0`
-2. **Signed PDF:** for enterprise contributors, email a signed copy to **legal@pheo.ai**
+2. **Signed PDF:** for enterprise contributors, email a signed copy to **apprentice@pheo.ai**
 
 ## 7. Contact
 
 Pheo Inc.  
-Email: **legal@pheo.ai**
+Email: **apprentice@pheo.ai**
 
 ---
 
