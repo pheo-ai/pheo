@@ -49,7 +49,6 @@ This is the shortest end-to-end check for observe -> review -> export -> apply m
 - LangGraph final node: use `pheo.integrations.langchain.pheo_review_node(...)` before business side effects
 - OpenAI/OpenRouter-compatible endpoint: `patterns/openai-compatible-endpoint.md`
 - LangSmith, W&B Weave, or Noveum traces: `patterns/import-traces.md`
-- Codex, Claude Code, Cursor, or another coding agent: `patterns/coding-agent-grow.md`
 - Coding-agent setup through MCP: `patterns/mcp-agent-checklist.md`
 
 Pheo does not receive customer data by default and does not call a Pheo-owned model.

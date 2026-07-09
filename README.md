@@ -57,12 +57,6 @@ Or run the bundled demo (no repo clone needed):
 pheo demo hello-world --reset
 ```
 
-For coding-agent output review:
-
-```bash
-pheo demo code-agent --reset
-```
-
 For the full AP finance walkthrough, clone this repo and follow [Getting Started](docs/getting-started.md).
 
 For contributors installing from source: `python3.13 -m pip install -e ".[langchain,dev]"`. See [docs/deployment.md](docs/deployment.md) and [docs/release.md](docs/release.md).
@@ -113,14 +107,12 @@ Use these when adding Pheo to an existing workflow:
 
 - [Wrap an existing Python function](patterns/wrap-python-function.md)
 - [Attach after LangChain or LangGraph](patterns/langchain-attach.md)
-- [Attach after Codex, Claude Code, Cursor, or another coding agent](patterns/coding-agent-grow.md)
 - [Observe an OpenAI-compatible endpoint](patterns/openai-compatible-endpoint.md)
 - [Import LangSmith, Weave, or Noveum traces](patterns/import-traces.md)
 - [Drive setup from a coding agent with MCP](patterns/mcp-agent-checklist.md)
 
 For a business workflow example, see [Finance Exception Example](examples/finance_exception/README.md).
 For a live LangChain attach demo, see [LangChain Attach Demo](examples/langchain_attach/README.md).
-For a coding-agent attach demo, see [Code Agent Demo](examples/code_agent/README.md).
 
 For existing LangChain apps, wrap the runnable at the release boundary:
 

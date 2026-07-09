@@ -1426,47 +1426,6 @@ class PheoTest(unittest.TestCase):
             self.assertIn("pheo start --store ap_invoice_exception_review", result.stdout)
             self.assertEqual(len(store.store.list_review_packets(workflow["id"])), 25)
 
-    def test_code_agent_demo_creates_review_memory_and_cycle_2_signal(self):
-        from pheo.examples.code_agent.run_demo import run_demo
-
-        with tempfile.TemporaryDirectory() as tempdir:
-            project = Path(tempdir) / "project"
-            out = Path(tempdir) / "pack"
-            result = run_demo(project, out, reset=True)
-
-            self.assertTrue((out / "memory_pack.json").exists())
-            self.assertTrue((out / "release_receipts.jsonl").exists())
-            self.assertTrue((out / "preference_tuples.jsonl").exists())
-            self.assertTrue(result["memory_signal"].get("applied"))
-            self.assertIn("tests", result["memory_signal"].get("prior_reason", ""))
-            artifacts = result["pack"]["artifacts"]
-            organic_receipts = [
-                item
-                for item in artifacts["release_receipts"]
-                if not item.get("backfilled") and item.get("reviewer_action") == "reject"
-            ]
-            self.assertEqual(len(organic_receipts), 1)
-            organic_tuples = [item for item in artifacts["preference_tuples"] if item.get("provenance") == "human_triage"]
-            self.assertGreaterEqual(len(organic_tuples), 1)
-            self.assertGreaterEqual(len(artifacts["judgment_memory"].get("entries") or []), 1)
-
-    def test_code_agent_demo_cli_runs_from_package(self):
-        with tempfile.TemporaryDirectory() as tempdir:
-            result = self._run_cli(
-                "demo",
-                "code-agent",
-                "--project",
-                str(Path(tempdir) / "project"),
-                "--out",
-                str(Path(tempdir) / "pack"),
-                "--reset",
-            )
-
-            self.assertIn("PHEO Grow: coding-agent attachment", result)
-            self.assertIn("Release blocked until human review", result)
-            self.assertIn("Cycle 2 observed with judgment memory applied", result)
-            self.assertIn("Export: receipts=", result)
-
     def test_agent_docs_are_current_and_plain_language(self):
         root = Path(__file__).resolve().parents[1]
         agents = (root / "docs/agents.md").read_text()
@@ -1494,9 +1453,7 @@ class PheoTest(unittest.TestCase):
             "patterns/openai-compatible-endpoint.md",
             "patterns/import-traces.md",
             "patterns/mcp-agent-checklist.md",
-            "patterns/coding-agent-grow.md",
             "examples/finance_exception/README.md",
-            "examples/code_agent/README.md",
             "llms.txt",
         )
         public_docs = "\n".join((root / path).read_text() for path in public_paths)
@@ -1513,10 +1470,8 @@ class PheoTest(unittest.TestCase):
         ):
             self.assertNotIn(phrase, public_docs)
         self.assertIn("--description \"Review AP invoice exception summaries", public_docs)
-        self.assertIn("Attach PHEO Grow To Coding Agents", public_docs)
         self.assertIn("Read docs/agents.md. Add Pheo review and export to the existing workflow.", (root / "llms.txt").read_text())
         self.assertTrue((root / "examples/finance_exception/observe_cases.py").exists())
-        self.assertTrue((root / "examples/code_agent/run_demo.py").exists())
 
         cases = [
             json.loads(line)

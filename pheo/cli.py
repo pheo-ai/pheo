@@ -67,10 +67,6 @@ def main(argv=None):
     hello_world_demo.add_argument("--port", type=int, default=8787)
     hello_world_demo.add_argument("--no-browser", action="store_true")
     hello_world_demo.add_argument("--reset", action="store_true", help="Delete prior demo project/export before running")
-    code_agent_demo = demo_sub.add_parser("code-agent", help="Run the bundled coding-agent attachment demo")
-    code_agent_demo.add_argument("--project", dest="code_agent_project", default="/tmp/pheo-code-agent-demo")
-    code_agent_demo.add_argument("--out", dest="code_agent_out", default="/tmp/pheo-code-agent-pack")
-    code_agent_demo.add_argument("--reset", action="store_true", help="Delete prior demo project/export before running")
 
     for command_name in ("start", "studio"):
         start = subparsers.add_parser(command_name, help="Start the local PHEO apprentice")
@@ -418,18 +414,6 @@ def main(argv=None):
             if args.reset:
                 demo_args.append("--reset")
             return run_hello_world_demo(demo_args)
-        if args.demo_command == "code-agent":
-            from pheo.examples.code_agent.run_demo import main as run_code_agent_demo
-
-            demo_args = [
-                "--project",
-                args.code_agent_project,
-                "--out",
-                args.code_agent_out,
-            ]
-            if args.reset:
-                demo_args.append("--reset")
-            return run_code_agent_demo(demo_args)
 
     explicit_project = getattr(args, "command_project", None) or args.project
     project = explicit_project or ("./.pheo" if args.command == "init" else resolve_project())
@@ -726,12 +710,11 @@ def _normalize_argv(argv):
     index = 0
     while index < len(argv):
         token = argv[index]
-        inside_demo = "demo" in argv[:index]
-        if token == "--project" and index + 1 < len(argv) and not inside_demo:
+        if token == "--project" and index + 1 < len(argv):
             project_flags.extend(["--project", argv[index + 1]])
             index += 2
             continue
-        if token.startswith("--project=") and not inside_demo:
+        if token.startswith("--project="):
             project_flags.append(token)
             index += 1
             continue
