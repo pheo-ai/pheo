@@ -207,11 +207,13 @@ Memory never bypasses review. It surfaces prior similar judgments and reasons be
 - Noveum trace export: use `pheo observe traces --source-type noveum`.
 - OpenTelemetry spans: use `pheo observe traces --source-type opentelemetry`.
 - Vercel AI SDK or another JavaScript workflow: send outputs through REST or JSONL until a first-class adapter exists.
-- Coding agent setup: use `pheo mcp`.
+- Codex, Claude Code, Cursor, or another coding agent: observe the final answer, diff summary, or trace at the release boundary; see `patterns/coding-agent-grow.md`.
+- Coding agent setup through MCP: use `pheo mcp`.
 - REST integration: see `API.md` and `GET /openapi.json` from `pheo start`.
 - Copy-paste implementation recipes: see the `patterns/` directory.
 - Finance/AP example data: see `examples/finance_exception/`.
 - Live LangChain attach demo: see `examples/langchain_attach/`.
+- Live code-agent attach demo: run `pheo demo code-agent --reset`.
 
 ## Endpoint Pattern
 
